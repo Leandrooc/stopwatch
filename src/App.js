@@ -1,25 +1,62 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect, useRef } from "react";
+import './css/index.css'
 
 function App() {
+  const [StateInSeconds, SetStateInSeconds] = useState(0);
+  const [pause, setPause] = useState(true);
+  
+  let intervalRef = useRef();
+  const incrementTime = () => SetStateInSeconds((prevState) => prevState + 1);
+
+  useEffect(() => {
+    return () => clearInterval(intervalRef.current);
+  }, []);
+  
+  const handleClick = () => {
+    pause ? intervalRef.current = setInterval(incrementTime, 1000) :
+    clearInterval(intervalRef.current);
+    setPause((prevState) => !prevState);
+  };
+
+  const clearTimer = () => {
+    clearInterval(intervalRef.current);
+    SetStateInSeconds(0)
+    setPause(() => true);
+  }
+  
+  const oneMinute = 60
+  const oneHour = 3600
+  const convertedMinutes = StateInSeconds / 60
+
+  const seconds = StateInSeconds - (parseInt(StateInSeconds / 60) * 60)
+  const minutes = StateInSeconds < oneMinute ? 0 : parseInt(convertedMinutes) - (parseInt(convertedMinutes / 60) * 60)
+  const hours = StateInSeconds < oneHour ? 0 : parseInt(StateInSeconds / 3600)
+
+  const render = (time) => time < 10 ? `0${time}` : time
+
+  document.title = `${render(hours)} : ${render(minutes)} : ${render(seconds)}`
+  const style = { fontSize: '60px', fontFamily: 'fantasy' }
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <main>
+      <div>
+
+         <span style={ style }>{`${render(hours)} : `}</span>
+         <span style={ style }>{`${render(minutes)} : `}</span>
+         <span style={ style }>{`${render(seconds)}`}</span>
+         
+         <br /> <br />
+        <button onClick={ handleClick }>
+          <span>{ pause ? "Start" : "Pause"}</span>
+        </button>
+        <br />
+        <button onClick={ clearTimer }>
+          <span>Clear</span>
+        </button>
+        <p style={{ fontSize: '33px' ,fontFamily: 'fantasy' }}>{ StateInSeconds } Seconds</p>
+      </div> 
+    </main>
+    )
 }
 
 export default App;
