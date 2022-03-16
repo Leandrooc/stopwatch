@@ -10,7 +10,7 @@ function App() {
 
   useEffect(() => {
     return () => clearInterval(intervalRef.current);
-  }, []);
+  }, []); // component unMount
   
   const handleClick = () => {
     pause ? intervalRef.current = setInterval(incrementTime, 1000) :
@@ -35,24 +35,23 @@ function App() {
   const render = (time) => time < 10 ? `0${time}` : time
 
   document.title = `${render(hours)} : ${render(minutes)} : ${render(seconds)}`
-  const style = { fontSize: '60px', fontFamily: 'fantasy' }
+  const styleTimer = { fontSize: '60px', fontFamily: 'fantasy' }
   
   return (
     <main>
       <div>
+      <span style={ styleTimer }>{`${render(hours)} : ${render(minutes)} : ${render(seconds)}`}</span>
 
-         <span style={ style }>{`${render(hours)} : `}</span>
-         <span style={ style }>{`${render(minutes)} : `}</span>
-         <span style={ style }>{`${render(seconds)}`}</span>
-         
          <br /> <br />
         <button onClick={ handleClick }>
           <span>{ pause ? "Start" : "Pause"}</span>
         </button>
         <br />
+
         <button onClick={ clearTimer }>
           <span>Clear</span>
         </button>
+
         <p style={{ fontSize: '33px' ,fontFamily: 'fantasy' }}>{ StateInSeconds } Seconds</p>
       </div> 
     </main>
